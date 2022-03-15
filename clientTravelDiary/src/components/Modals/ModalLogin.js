@@ -29,8 +29,8 @@ function ModalLogin(props) {
 	};
 
 	const handleCloseModal = (value) => {
-		props.onHide(!value)
-	}
+		props.onHide(!value);
+	};
 
 	const handleLogin = async (e) => {
 		try {
@@ -60,7 +60,7 @@ function ModalLogin(props) {
 						text: response.data.data.user.fullname,
 						icon: "success",
 					});
-					handleCloseModal(false)
+					handleCloseModal(false);
 					navigate("/");
 				}
 			}

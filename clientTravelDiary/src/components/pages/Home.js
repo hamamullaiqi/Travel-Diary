@@ -69,12 +69,7 @@ function Home() {
 					icon: "success",
 				});
 			}
-		// } else {
-			
-		// 	return setModalLogin(!modalLogin);
-			
 		}
-		
 	};
 
 	return (

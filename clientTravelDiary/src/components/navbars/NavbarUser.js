@@ -4,6 +4,7 @@ import { Navbar, Container, Stack, Nav, Dropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import logoBlack from "../../assets/img/logoBlack.png";
 import avatarDummy from "../../assets/img/null.png";
+import Swal from "sweetalert2";
 export const path = "http://localhost:4000/uploads/";
 
 function NavbarUser() {
@@ -14,10 +15,25 @@ function NavbarUser() {
 	const id = state.user.id;
 
 	const handleLogOut = () => {
-		dispatch({
-			type: "LOGOUT",
-		});
-		navigate("/");
+		Swal.fire({
+			title: 'Are you sure Log Out?',
+			text: "You won't be able to log out!",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yes, Log Out!'
+		  }).then((result) => {
+			if (result.isConfirmed) {
+			  
+			  dispatch({
+				type: "LOGOUT",
+			});
+			navigate("/");
+			}
+		  })
+
+		
 	};
 
 	useEffect(() => {

@@ -49,10 +49,8 @@ function CardPost(props) {
 	function convertToPlain(html) {
 		// membungkus param html ke div
 		let tempDivElement = document.createElement("div");
-
 		// convert param to html
 		tempDivElement.innerHTML = html;
-
 		// Retrieve the text property of the element
 		return tempDivElement.textContent || tempDivElement.innerText || "";
 	}
@@ -88,7 +86,7 @@ function CardPost(props) {
 				<Card.Img
 					variant="top"
 					src={props.item.image}
-					style={{ maxHeight: "200px", objectFit: "cover" }}
+					style={{ height: "200px", objectFit: "cover" }}
 				/>
 
 				<Card.Body>

@@ -151,11 +151,11 @@ exports.checkAuth = async (req, res) => {
 			},
 		});
 
-		if (!dataUser) {
-			return res.status(404).send({
-				status: "failed",
-			});
-		}
+		// if (!dataUser) {
+		// 	return res.status(404).send({
+		// 		status: "failed",
+		// 	});
+		// }
 
 		res.send({
 			status: "success...",

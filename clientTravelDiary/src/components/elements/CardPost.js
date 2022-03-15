@@ -42,8 +42,14 @@ function CardPost(props) {
 	const [state, dispatch] = useContext(UserContext);
 
 	const handleClickBookmark = (id) => {
-		setBookmark(!bookmark);
-		props.handleBookmark(id);
+		if(state.isLogin){
+			setBookmark(!bookmark);
+			props.handleBookmark(id);
+		} else {
+			setBookmark(false)
+			props.handleModal(true)
+		}
+		
 	};
 
 	function convertToPlain(html) {

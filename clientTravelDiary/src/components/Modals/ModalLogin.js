@@ -28,6 +28,10 @@ function ModalLogin(props) {
 		});
 	};
 
+	const handleCloseModal = (value) => {
+		props.onHide(!value)
+	}
+
 	const handleLogin = async (e) => {
 		try {
 			e.preventDefault();
@@ -56,6 +60,7 @@ function ModalLogin(props) {
 						text: response.data.data.user.fullname,
 						icon: "success",
 					});
+					handleCloseModal(false)
 					navigate("/");
 				}
 			}

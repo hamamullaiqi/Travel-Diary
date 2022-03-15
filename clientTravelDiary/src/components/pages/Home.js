@@ -45,9 +45,7 @@ function Home() {
 	}, []);
 
 	const handleBookmark = async (idJourney) => {
-		if (!state.isLogin) {
-			return setModalLogin(!modalLogin);
-		} else {
+		if (state?.isLogin) {
 			setBookmark(!bookmark);
 
 			const config = {
@@ -71,7 +69,12 @@ function Home() {
 					icon: "success",
 				});
 			}
+		// } else {
+			
+		// 	return setModalLogin(!modalLogin);
+			
 		}
+		
 	};
 
 	return (
@@ -105,6 +108,7 @@ function Home() {
 										item={item}
 										bookmark={bookmark}
 										handleBookmark={(id) => handleBookmark(id)}
+										handleModal={(value) => setModalLogin(value)}
 									/>
 								</Col>
 							))}

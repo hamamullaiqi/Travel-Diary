@@ -72,7 +72,85 @@ exports.getUser = async (req, res) => {
     }
 }
 
-exports.updateprofile = async (req, res) => {
+exports.updateProfile = async (req, res) => {
+    try {
+        const { id } = req.params
+
+        
+
+            // let dataUser = await user.findOne({
+            //     where: {
+            //         id
+            //     },
+            //     attributes: {
+            //         exclude: ["createdAt", "updatedAt", "password"],
+            //     },
+            // })
+
+            
+    
+        //     if(dataUser.image !== null) {
+    
+        //     const replaceFile = (filePath)=> {
+        //         //menggabungkan direktori controller , uploads dan nama file Product
+                
+        //         filePath = path.join(__dirname, "../../uploads", filePath)
+        //         fs.unlink( filePath, (err) => console.log(err))
+        //     }
+
+        // replaceFile(dataUser.image)
+
+
+        // }
+
+        let dataUpdate = {
+            fullname : req.body.fullname,
+            email : req.body.email,
+            phone : req.body.phone,
+            address : req.body.address,
+            // image : req.file.filename
+        }
+
+        console.log(id);
+
+         let updateProfile = await user.update(dataUpdate, {
+            where : {
+                id
+            },
+            ...dataUpdate
+            
+        })
+
+        updateProfile = JSON.parse(JSON.stringify(updateProfile))
+
+        // updateProfile = {
+        //     ...dataUpdate,
+        //     image : process.env.FILE_PATH + dataUpdate.image
+        // }
+
+        // dataUser = JSON.parse(JSON.stringify(dataUser))
+        
+
+        // dataUser =  { ...dataUser,  image : process.env.FILE_PATH + dataUser.image}
+        
+           
+
+        res.status(201).send({
+            status: "success",
+            data: {
+                updateProfile
+            }
+        })
+    } catch (error) {
+        console.log(error);
+		res.status(500).send({
+			status: "failed",
+			message: "Server Error",
+		});
+    }
+}
+
+exports.updateAvatarProfile = async (req, res) => {
     try {
         const { id } = req.params
 
@@ -104,16 +182,12 @@ exports.updateprofile = async (req, res) => {
         }
 
         let dataUpdate = {
-            fullname : req.body.fullname,
-            email : req.body.email,
-            phone : req.body.phone,
-            address : req.body.address,
             image : req.file.filename
         }
 
         console.log(id);
 
-         let updateProfile = await user.update(dataUpdate, {
+         let updateAvatarProfile = await user.update(dataUpdate, {
             where : {
                 id
             },
@@ -121,10 +195,9 @@ exports.updateprofile = async (req, res) => {
             
         })
 
-        updateProfile = JSON.parse(JSON.stringify(updateProfile))
+        updateAvatarProfile = JSON.parse(JSON.stringify(updateAvatarProfile))
 
-        updateProfile = {
-            ...dataUpdate,
+        updateAvatarProfile = {
             image : process.env.FILE_PATH + dataUpdate.image
         }
 
@@ -138,7 +211,7 @@ exports.updateprofile = async (req, res) => {
         res.status(200).send({
             status: "success",
             data: {
-                updateProfile
+               updateAvatarProfile
             }
         })
     } catch (error) {

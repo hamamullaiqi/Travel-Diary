@@ -8,7 +8,7 @@ const {
 	getBookmark,
 	deleteBookmark,
 } = require("../controllers/bookmark");
-const { getUsers, getUser, updateprofile } = require("../controllers/user");
+const { getUsers, getUser, updateProfile, updateAvatarProfile } = require("../controllers/user");
 
 const router = express.Router();
 //middleware
@@ -25,7 +25,8 @@ router.post("/login", login);
 //user
 router.get("/users", getUsers);
 router.get("/user/:id", getUser);
-router.patch("/profile/:id",uploadFile("image"), updateprofile);
+router.patch("/profile/:id", updateProfile);
+router.patch("/profile/:id/avatar",uploadFile("image"), updateAvatarProfile)
 
 
 
@@ -33,7 +34,7 @@ router.patch("/profile/:id",uploadFile("image"), updateprofile);
 router.post("/journey", uploadFile("image"),  addJourney);  
 router.get("/journeys", getJourneys);
 router.get("/journey/:id", getJourney);
-router.get("/profile/:id/journey", getUserJourneys);
+router.get("/profile/:id/journey",auth, getUserJourneys);
 	
 
 

@@ -47,7 +47,7 @@ function ModalLogin(props) {
 			const response = await API.post("/login", body, config);
 
 			const alert = <Alert variant="success">{response.data.status}</Alert>;
-
+			
 			setMessage(alert);
 			if (response?.status === 200) {
 				if (response.data.status === "success") {
@@ -82,12 +82,12 @@ function ModalLogin(props) {
 		<Modal show={props.show} onHide={props.onHide} centered>
 			<div className="position-relative">
 				<img
-					src="assets/atlas1.png"
+					src="../assets/atlas1.png"
 					alt="atlas"
 					className="position-absolute top-0 start-0"
 				/>
 				<img
-					src="assets/leaf1.png"
+					src="../assets/leaf1.png"
 					alt="leaf"
 					className="position-absolute top-0 end-0"
 				/>

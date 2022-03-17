@@ -5,12 +5,15 @@ import { Link, useNavigate } from "react-router-dom";
 import logoBlack from "../../assets/img/logoBlack.png";
 import avatarDummy from "../../assets/img/null.png";
 import Swal from "sweetalert2";
+import { API } from "../../configAPI/api";
 export const path = "http://localhost:4000/uploads/";
 
 function NavbarUser() {
 	const navigate = useNavigate();
 	const [state, dispatch] = useContext(UserContext);
 	const [avatar, setAvatar] = useState(null);
+
+	// console.log("jalan");
 
 	const id = state.user.id;
 
@@ -36,12 +39,29 @@ function NavbarUser() {
 		
 	};
 
+	
+
+	const getUser = async () => {
+		// console.log("getUser");
+		const response = await API.get(`/user/${id}`);
+		setAvatar(response.data.data.dataUser.image);
+		// console.log(response.data.data.dataUser.image);
+
+	};
+
 	useEffect(() => {
-		setAvatar(state.user.image);
+		// console.log("useEffect");
+		if(state.isLogin){
+			getUser()
+		}
+		
+		
 	});
 
+	
+
 	return (
-		<Navbar bg="light" sticky="top" className=" shadow">
+		<Navbar bg="light" sticky="top" className="shadow">
 			<Container className="justify-content-between align-items-center">
 				<Navbar.Brand>
 					<Link to="/">

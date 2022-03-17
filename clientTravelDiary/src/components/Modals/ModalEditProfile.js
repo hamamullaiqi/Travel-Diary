@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import * as Icon from "react-bootstrap-icons";
-import { Modal, Form, Button, Alert } from "react-bootstrap";
+import { Modal, Form, Button, Spinner } from "react-bootstrap";
 import avatarDummy from "../../assets/img/null.png";
 import { useNavigate, useParams } from "react-router-dom";
+import { UserContext } from "../../context/userContext";
 import { API } from "../../configAPI/api";
+import Swal from "sweetalert2";
 
 const path = "http://localhost:4000/uploads/";
 
@@ -13,11 +15,15 @@ function ModalEditProfile(props) {
 
 	const navigate = useNavigate();
 	const { id } = useParams();
+	const [state, dispatch] = useContext(UserContext);
 	const [avatar, setAvatar] = useState(null);
 	const [message, setMessage] = useState(null);
 
-	const [form, setForm] = useState({
+	const [img, setImg] = useState({
 		image: "",
+	});
+
+	const [form, setForm] = useState({
 		fullname: "",
 		email: "",
 		// password: "",
@@ -25,11 +31,12 @@ function ModalEditProfile(props) {
 		address: "",
 	});
 
-	const { image, fullname, email, password, phone, address } = form;
+	const { fullname, email, password, phone, address } = form;
 
-
+	//fecth dataProfile
 	const getProfile = async () => {
 		const response = await API.get(`/user/${id}`);
+
 		setAvatar(path + response.data.data.dataUser.image);
 		setForm({
 			...form,
@@ -42,29 +49,37 @@ function ModalEditProfile(props) {
 
 	useEffect(() => {
 		getProfile();
+
 		return () => {
 			setForm({});
 		};
 	}, []);
 
-	const handleChange = (e) => {
+	//handle change Edit User
+	const handleChange = (e) => [
 		setForm({
 			...form,
+			[e.target.name]: e.target.value,
+		}),
+	];
+
+	//handle change Form input Image
+	const handleChangeAvatar = (e) => {
+		setImg({
 			[e.target.name]:
 				e.target.type === "file" ? e.target.files : e.target.value,
 		});
 
 		if (e.target.type === "file") {
 			let url = URL.createObjectURL(e.target.files[0]);
-			console.log(url);
+			// console.log(url);
 			setAvatar(url);
 		}
 	};
 
-	const handleSave = async (e) => {
+	//handle to save image to server
+	const handleSaveAvatar = async () => {
 		try {
-			e.preventDefault();
-
 			const config = {
 				headers: {
 					"Content-type": "multipart/form-data",
@@ -73,23 +88,48 @@ function ModalEditProfile(props) {
 
 			const formData = new FormData();
 
-			formData.set("fullname", form.fullname);
-			formData.set("email", form.email);
-			formData.set("phone", form.phone);
-			formData.set("address", form.address);
+			formData.set("image", img.image[0], img.image[0].name);
 
-			if (form.image) {
-				formData.set("image", form?.image[0], form?.image[0]?.name);
-			}
-
-			const response = await API.patch(`/profile/${id}`, formData, config);
+			const resImg = await API.patch(`/profile/${id}/avatar`, formData, config);
 		} catch (error) {
-			const alert = (
-				<Alert variant="danger">{error.response.data.error.message}</Alert>
-			);
-
-			setMessage(alert);
+			console.log(error);
 		}
+	};
+
+	//handle to save input to server
+	const handleSave = async (e) => {
+		try {
+			e.preventDefault();
+
+			const config = {
+				headers: {
+					"Content-type": "application/json",
+				},
+			};
+
+			// console.log(form);
+
+			const response = await API.patch(`/profile/${id}`, form, config);
+
+			if (response.data.status === "success") {
+				Swal.fire({
+					title: "success",
+					text: "Updated!",
+					icon: "success",
+				});
+				
+				handleSaveAvatar();
+				handleCloseModal(false);
+				
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	//handle close modal after update profile success
+	const handleCloseModal = (value) => {
+		props.onHide(!value);
 	};
 
 	return (
@@ -109,42 +149,43 @@ function ModalEditProfile(props) {
 			<Modal.Body style={{ padding: "30px" }} className="m-2 ">
 				<h1 className="mb-5 text-center fw-bold">Edit Profile</h1>
 
-				<Form>
-					<div className="position-relative text-center">
-						<Form.Label htmlFor="input-image">
-							<Form.Control
-								id="input-image"
-								name="image"
-								onChange={handleChange}
-								className="input-image "
-								type="file"
-								style={{ display: "none" }}
-							/>
-							<div
-								className="rounded-circle  bg-primary shadow"
-								style={{
-									position: "absolute",
-									top: "150px",
-									right: "130px",
-									padding: "8px",
-									cursor: "pointer",
-								}}
-							>
-								<Icon.PencilSquare color="white" size={24} />
-							</div>
-							<img
-								src={avatar === null ? avatarDummy : avatar}
-								alt="avatar"
-								className="rounded-circle border border-3 border-primary mb-3"
-								style={{
-									width: "12rem",
-									height: "12rem",
-									objectFit: "cover",
-								}}
-							/>
-						</Form.Label>
-					</div>
+				<div className="position-relative text-center">
+					<Form.Label htmlFor="input-image">
+						<Form.Control
+							id="input-image"
+							name="image"
+							onChange={handleChangeAvatar}
+							className="input-image "
+							type="file"
+							style={{ display: "none" }}
+						/>
+						<div
+							className="rounded-circle  bg-primary shadow"
+							style={{
+								position: "absolute",
+								top: "150px",
+								right: "130px",
+								padding: "8px",
+								cursor: "pointer",
+							}}
+						>
+							<Icon.PencilSquare color="white" size={24} />
+						</div>
+					</Form.Label>
 
+					<img
+						src={avatar === path + null ? avatarDummy : avatar}
+						alt="avatar"
+						className="rounded-circle border border-3 border-primary mb-3"
+						style={{
+							width: "12rem",
+							height: "12rem",
+							objectFit: "cover",
+						}}
+					/>
+				</div>
+
+				<Form>
 					<Form.Group controlId="inputFullName">
 						<Form.Label className="h5 fw-bold">Full Name</Form.Label>
 						<Form.Control

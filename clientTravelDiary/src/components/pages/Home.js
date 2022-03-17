@@ -42,6 +42,7 @@ function Home() {
 
 	useEffect(() => {
 		getJourneys();
+		
 	}, []);
 
 	const handleBookmark = async (idJourney) => {
@@ -55,7 +56,7 @@ function Home() {
 			};
 
 			let data = {
-				idUser: idUser,
+				idUser,
 				idJourney: idJourney,
 			};
 
@@ -71,7 +72,7 @@ function Home() {
 			}
 		}
 	};
-
+	
 	return (
 		<div>
 			<Container fluid style={{ padding: 0 }}>

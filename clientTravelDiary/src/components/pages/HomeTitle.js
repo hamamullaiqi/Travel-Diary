@@ -16,7 +16,7 @@ function HomeTitle() {
 				backgroundImage: `url(${hero})`,
 				backgroundPosition: "center",
 				objectFit: "cover",
-				filter: "brightness(0.8)",
+				filter: "brightness(0.7)",
 				position: "absolute",
 				zIndex: -1
 				

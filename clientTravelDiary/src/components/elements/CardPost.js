@@ -102,7 +102,7 @@ function CardPost(props) {
 						}}
 						style={{ textDecoration: "none", color: "#000" }}
 					>
-						<dt style={{ fontSize: "18px" }}>{props.item.title}</dt>
+						<dt style={{ fontSize: "16px" }}>{convertToPlain(props.item.title).substr(0, 25) + "..."}</dt>
 						<p className="text-muted" style={{ fontSize: "12px" }}>
 							{getFullTime(props.item.createdAt)}, {props.item.author.fullname}
 						</p>

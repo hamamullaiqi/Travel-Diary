@@ -1,0 +1,32 @@
+1. konsumen memilih product
+2. melakukan check out
+3. toko online mengirim info pembelian ke payment gateway
+4. konsumen melakukan transaksi 
+5. transaksi di teruskan ke institusi pembayaran yang dipilih 
+6. payment gateway akan mengirimkan status transaksi 
+7. institusi pembayaran menerima pembayaran dan meneruskan pembayaran ke toko online
+
+urutan pembuatan fitur comment dengan firebase
+#npm install firebase
+1. membuat config 
+
+2. import method : 
+import { initializeApp } from "firebase/app";
+import { getFirestore} from "firebase/firebase-firestore"
+
+3. Copy and Pass config dari firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyBhQELNg5SVlg7t0sGNnS_LjDlBKBPXtOE",
+  authDomain: "travel-diary-37f31.firebaseapp.com",
+  projectId: "travel-diary-37f31",
+  storageBucket: "travel-diary-37f31.appspot.com",
+  messagingSenderId: "143052099215",
+  appId: "1:143052099215:web:f1bc003d4a226d47a76afa",
+  measurementId: "G-ZYRP5KWTJN"
+};
+
+4. initialize firebase 
+ const app = initializeApp(firebaseConfig);
+
+5. init firestore dari firebase
+  export const db = getFirestore(app)

@@ -42,7 +42,7 @@ function Profile() {
 		return () => {
 			setMyJourney([]);
 		};
-	}, []);
+	}, [id]);
 
 	const getJourney = async () => {
 		const response = await API.get(`/profile/${id}/journey`);

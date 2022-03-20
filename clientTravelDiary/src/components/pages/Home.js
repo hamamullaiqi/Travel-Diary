@@ -47,7 +47,7 @@ function Home() {
 			setJourneys([])
 		}
 		
-	}, []);
+	}, [state.isLogin]);
 
 	const handleBookmark = async (idJourney) => {
 		if (state?.isLogin) {

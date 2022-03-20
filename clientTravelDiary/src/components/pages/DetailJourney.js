@@ -26,9 +26,14 @@ import {
 	query,
 	addDoc,
 	orderBy,
+	updateDoc,
+	doc,
+	deleteDoc,
+	ref,
 } from "firebase/firestore";
 import { getDistanceTime } from "../elements/date";
 import * as Icon from "react-bootstrap-icons";
+import { async } from "@firebase/util";
 
 export const path = "http://localhost:4000/uploads/";
 
@@ -63,7 +68,39 @@ function DetailJourney() {
 		);
 
 		const data = await getDocs(commentsCollRef);
-		setComments(data.docs.map((doc, index) => ({ ...doc.data() })));
+		setComments(data.docs.map((doc) => ({ ...doc.data() })));
+	};
+
+	const deleteJourneyComments = async () => {
+		Swal.fire({
+			title: "Are you sure Delete..",
+			text: desc.title,
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "Yes, Log Out!",
+		}).then(async(result) => {
+			if (result.isConfirmed) {
+				const response = await API.delete(`journey/${id}`);
+				//delete Alldata comments where idJourney in firebase
+				const commentsCollRef = query(
+					collection(db, "comments"),
+					orderBy("data.date", "desc"),
+					where("idJourney", "==", id)
+				);
+
+				const data = await getDocs(commentsCollRef);
+				let dataId = data.docs.map((doc) => doc.id);
+
+				data.forEach(async (result) => {
+					const docRef = doc(db, "comments", result.id);
+					await deleteDoc(docRef);
+				});
+
+				navigate("/");
+			}
+		});
 	};
 
 	const addComment = async () => {
@@ -161,7 +198,7 @@ function DetailJourney() {
 					<Col lg={11}>
 						<h2 className="fw-bold">{desc.title}</h2>
 					</Col>
-					{state.user.id=== author.id && (
+					{state.user.id === author.id && (
 						<Col lg={1}>
 							<Dropdown align="end">
 								<Dropdown.Toggle
@@ -174,14 +211,12 @@ function DetailJourney() {
 
 								<Dropdown.Menu className=" shadow text-center">
 									<Dropdown.Item
-									onClick={() => navigate(`/update-journey/${id}`)}
+										onClick={() => navigate(`/update-journey/${id}`)}
 									>
-										<span >Edit Journey</span>
+										<span>Edit Journey</span>
 									</Dropdown.Item>
 									<Dropdown.Divider />
-									<Dropdown.Item
-									// onClick={() => navigate(`/profile/${id}`)}
-									>
+									<Dropdown.Item onClick={deleteJourneyComments}>
 										<span className="text-danger">Delete Journey</span>
 									</Dropdown.Item>
 								</Dropdown.Menu>

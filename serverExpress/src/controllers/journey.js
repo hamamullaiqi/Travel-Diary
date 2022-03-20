@@ -321,3 +321,32 @@ exports.updateThumbJourney = async (req, res) => {
 		});
     }
 }
+
+exports.deleteJourney = async (req, res) => {
+    try {
+        const { id } = req.params
+
+        
+
+           const deleteJourney = await journeyPost.destroy({
+			   where: {
+				   id
+			   }
+		   })
+           
+
+        res.status(200).send({
+            status: "success",
+            data: {
+				deleteJourney
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        console.log(error);
+		res.status(500).send({
+			status: "failed",
+			message: "Server Error",
+		});
+    }
+}

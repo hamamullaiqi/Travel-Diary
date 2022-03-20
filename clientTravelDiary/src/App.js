@@ -13,6 +13,8 @@ import DetailJourney from "./components/pages/DetailJourney";
 import Bookmark from "./components/pages/Bookmark";
 import Profile from "./components/pages/Profile";
 import AddJourney from "./components/pages/AddJourney";
+import UpdateJourney from "./components/pages/UpdateJourney";
+
 
 //import API
 import { API, setAuthToken } from "./configAPI/api";
@@ -73,6 +75,8 @@ function App() {
 			<Route exact path="/profile/:id" element={<Profile />} />
 			<Route exact path="/new-journey" element={<AddJourney />} />
 			<Route exact path="/bookmark/:id" element={<Bookmark />} />
+			<Route exact path="/update-journey/:id" element={<UpdateJourney />} />
+
 			<Route
 				exact
 				path="/profile/:idUser/detail-journey/:id"

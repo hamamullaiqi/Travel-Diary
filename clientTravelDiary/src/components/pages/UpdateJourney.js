@@ -1,9 +1,9 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { UserContext } from "../../context/userContext";
 import { Container, Stack, Form, Button } from "react-bootstrap";
 import NavbarUser from "../navbars/NavbarUser";
 import { API } from "../../configAPI/api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 
 import "froala-editor/css/froala_style.min.css";
@@ -18,19 +18,25 @@ import FroalaEditor from "react-froala-wysiwyg";
 
 export const path = "http://localhost:4000/upload_image";
 
-function AddJourney() {
+function UpdateJourney() {
 	const navigate = useNavigate();
 
-	const title = "New Journey";
+	const { id } = useParams()
+
+	const title = "Update Journey";
 	document.title = "The Journey | " + title;
 
 	const [state, dispatch] = useContext(UserContext);
 	const [preview, setPreview] = useState(null);
 	const [alert, setAlert] = useState(null);
 
+	const [thumb, setThumb] = useState({
+		image: "",
+	});
+
 	const [form, setForm] = useState({
 		title: "",
-		image: "",
+
 	});
 
 	const [model, setModel] = useState({
@@ -45,16 +51,62 @@ function AddJourney() {
 		});
 	};
 
-	const handleChange = (e) => {
+
+	const getJourney =async () => {
+
+		const response = await API.get(`journey/${id}`)
+		const dataRes = response.data.data.dataJourney[0];
+		setModel({
+			...model,
+			content : dataRes.desc
+		})
 		setForm({
 			...form,
+			title : dataRes.title,
+
+
+		})
+		setPreview(dataRes.image)
+
+		
+	}
+	const handleChangeThumb = (e) => {
+		setThumb({
 			[e.target.name]:
 				e.target.type === "file" ? e.target.files : e.target.value,
 		});
 
 		if (e.target.type === "file") {
 			let url = URL.createObjectURL(e.target.files[0]);
+			// console.log(url);
 			setPreview(url);
+		}
+		
+	};
+
+	const handleChange = (e) => {
+		setForm({
+			...form,
+			[e.target.name]: e.target.value,
+		})
+	};
+
+
+	const handleThumb= async () => {
+		try {
+			const config = {
+				headers: {
+					"Content-type": "multipart/form-data",
+				},
+			};
+
+			const formData = new FormData();
+
+			formData.set("image", thumb.image[0], thumb.image[0].name);
+
+			const resImg = await API.patch(`/journey/${id}/thumb`, formData, config);
+		} catch (error) {
+			console.log(error);
 		}
 	};
 
@@ -64,36 +116,45 @@ function AddJourney() {
 
 			const config = {
 				headers: {
-					"Content-type": "multipart/form-data",
+					"Content-type": "application/json",
 				},
 			};
 
-			const formData = new FormData();
-			formData.set("idUser", state.user.id);
-			formData.set("title", form.title);
-			formData.set("image", form.image[0], form.image[0].name);
-			formData.set("desc", model.content);
+			let data = {
+				title : form.title,
+				desc : model.content
+			}
 
-			const response = await API.post("/journey", formData, config);
-			// console.log(response);
-			if (response.status === 200) {
+			const response = await API.patch(`/journey/${id}`, data, config);
+			console.log(response);
+			if (response.status === 201) {
+			handleThumb()
+
 				Swal.fire({
 					title: "Success",
-					text: "You Add Post Journey!",
+					text: "You Update Post Journey!",
 					icon: "success",
 				});
+
 				navigate("/");
 			}
 		} catch (error) {
 			console.log(error);
 		}
 	};
+
+	useEffect(() => {
+		getJourney()
+		return () => {
+
+		}
+	}, [])
 	return (
 		<>
 			<NavbarUser />
 			<Container fluid className="px-5">
 				<h1 className="my-5">
-					<dt>New Journey</dt>
+					<dt>Edit Journey</dt>
 				</h1>
 				{alert && alert}
 
@@ -104,6 +165,7 @@ function AddJourney() {
 							<Form.Control
 								className=" p-2 mb-4 "
 								type="text"
+								value={form.title}
 								name="title"
 								onChange={handleChange}
 							/>
@@ -122,7 +184,7 @@ function AddJourney() {
 								className=" p-2 mb-4 "
 								type="file"
 								name="image"
-								onChange={handleChange}
+								onChange={handleChangeThumb}
 							/>
 
 							<FroalaEditor
@@ -177,4 +239,4 @@ function AddJourney() {
 	);
 }
 
-export default AddJourney;
+export default UpdateJourney;

@@ -42,6 +42,10 @@ function Home() {
 
 	useEffect(() => {
 		getJourneys();
+
+		return () => {
+			setJourneys([])
+		}
 		
 	}, []);
 

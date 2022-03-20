@@ -76,32 +76,6 @@ exports.updateProfile = async (req, res) => {
     try {
         const { id } = req.params
 
-        
-
-            // let dataUser = await user.findOne({
-            //     where: {
-            //         id
-            //     },
-            //     attributes: {
-            //         exclude: ["createdAt", "updatedAt", "password"],
-            //     },
-            // })
-
-            
-    
-        //     if(dataUser.image !== null) {
-    
-        //     const replaceFile = (filePath)=> {
-        //         //menggabungkan direktori controller , uploads dan nama file Product
-                
-        //         filePath = path.join(__dirname, "../../uploads", filePath)
-        //         fs.unlink( filePath, (err) => console.log(err))
-        //     }
-
-        // replaceFile(dataUser.image)
-
-
-        // }
 
         let dataUpdate = {
             fullname : req.body.fullname,

@@ -1,4 +1,6 @@
 const { journeyPost, user } = require("../../models");
+const path = require("path")
+const fs = require("fs")
 
 
 exports.getJourneys = async (req, res) => {
@@ -196,3 +198,126 @@ exports.addJourney = async (req, res) => {
 		});
 	}
 };
+
+exports.updateJourney = async (req, res) => {
+    try {
+        const { id } = req.params
+
+
+        let dataUpdate = {
+			
+            title : req.body.title,
+			desc : req.body.desc
+            // image : req.file.filename
+        }
+
+        console.log(id);
+
+         let updateJourney = await journeyPost.update(dataUpdate, {
+            where : {
+                id
+            },
+            ...dataUpdate
+            
+        })
+
+        updateJourney = JSON.parse(JSON.stringify(updateJourney))
+
+        // updateJourney = {
+        //     ...dataUpdate,
+        //     image : process.env.FILE_PATH + dataUpdate.image
+        // }
+
+        
+           
+
+        res.status(201).send({
+            status: "success",
+            data: {
+                updateJourney
+            }
+        })
+    } catch (error) {
+        console.log(error);
+		res.status(500).send({
+			status: "failed",
+			message: "Server Error",
+		});
+    }
+}
+
+exports.updateThumbJourney = async (req, res) => {
+    try {
+        const { id } = req.params
+
+        
+
+            let dataJourney = await journeyPost.findOne({
+                where: {
+                    id
+                },
+                attributes: {
+                    exclude: ["createdAt", "updatedAt", "password"],
+                },
+            })
+
+
+
+            
+    
+            if(dataJourney.image !== null) {
+    
+            const replaceFile = (filePath)=> {
+                //menggabungkan direktori controller , uploads dan nama file Product
+                
+                filePath = path.join(__dirname, "../../uploads", filePath)
+                fs.unlink( filePath, (err) => console.log(err))
+            }
+
+        replaceFile(dataJourney.image)
+
+
+        }
+
+        let dataUpdate = {
+            image : req.file.filename
+        }
+
+        console.log(id);
+
+         let updateThumbJourney = await journeyPost.update(dataUpdate, {
+            where : {
+                id
+            },
+            ...dataUpdate
+            
+        })
+
+        updateThumbJourney = JSON.parse(JSON.stringify(updateThumbJourney))
+
+        updateThumbJourney = {
+            image : process.env.FILE_PATH + dataUpdate.image
+        }
+
+        // dataUser = JSON.parse(JSON.stringify(dataUser))
+        
+
+        // dataUser =  { ...dataUser,  image : process.env.FILE_PATH + dataUser.image}
+        
+           
+
+        res.status(200).send({
+            status: "success",
+            data: {
+               updateThumbJourney
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        console.log(error);
+		res.status(500).send({
+			status: "failed",
+			message: "Server Error",
+		});
+    }
+}

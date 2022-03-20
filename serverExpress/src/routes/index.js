@@ -1,7 +1,7 @@
 const express = require("express");
 
 const { register, login, checkAuth } = require("../controllers/auth");
-const { addJourney, getJourneys, getJourney,  getUserJourneys } = require("../controllers/journey");
+const { addJourney, getJourneys, getJourney,  getUserJourneys, updateJourney, updateThumbJourney } = require("../controllers/journey");
 const {
 	addBookmark,
 	getBookmarks,
@@ -35,6 +35,9 @@ router.post("/journey", uploadFile("image"),  addJourney);
 router.get("/journeys", getJourneys);
 router.get("/journey/:id", getJourney);
 router.get("/profile/:id/journey",auth, getUserJourneys);
+router.patch("/journey/:id",auth, updateJourney);
+router.patch("/journey/:id/thumb",auth, uploadFile("image"), updateThumbJourney);
+// router.delete("/journey/:id",auth, );
 	
 
 
